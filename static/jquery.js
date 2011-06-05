@@ -1,0 +1,1 @@
+/home/folksilva/SDKs&Libs/jQuery/jquery-1.5.js

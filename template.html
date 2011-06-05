@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Social Drive</title>
+<link href="/static/style.css" rel="stylesheet" type="text/css" />
+
+<script src="/static/jquery.js"></script>
+<script src="/static/maskedinput.js"></script>
+<script src="/static/socialdrive.js"></script>
+</head>
+<body>
+	<div class="content">
+		<section>
+			<div class="alert">
+				<h2>ATENÇÃO</h2>
+				<p>Não utilize essa ferramenta enquanto estiver dirigindo. Use o cinto, ele é sua segurança.</p>
+			</div>
+			<form id="socialdrive" method='POST'>
+				<div class="plate">
+					<div class="plate-inside">
+						<div class="plate-logo">SOCIAL DRIVE</div>
+						<input type="text" id="plate" name="plate" class="plate-text" value="{% if plate %}{{ plate }}{% else %}ABC-1234{% endif %}" title="Digite aqui a placa do veículo" required />
+					</div>
+				</div>
+				
+				<div class="align-to-right">
+					<button class="send-button" type="button" onclick="showMessages()" title="Clique para ver as mensagens enviadas para essa placa">VER MENSAGENS</button>
+				</div>
+				<div id="flash">{% if flash %}{{ flash }}{% endif %}</div>
+				<div class="message-form">
+					<span id="msg-counter">200</span>
+					ENVIE O SEU RECADO PARA ESSA PLACA:				
+					<textarea class="message-text" id="msg" name="msg" placeholder="Digite a mensagem que deseja enviar"></textarea>
+					<div class="align-to-right">
+						<button class="send-button" type="submit">ENVIAR</button>
+					</div> 
+					
+				</div>
+			</form>
+			{% if messages %}
+			{% for message in messages %}
+			<article>
+				<a id="m{{ message.key }}" name="m{{ message.key }}" href="?m={{ message.key }}" title="Link permanente para essa mensagem">
+					<strong class="when">{{ message.when|date:"D, d b Y - H:s" }}</strong></a> &bull; 
+					<a class="reply-link" href="javascript:void()" onclick="reply('{{ message.key }}')">responder</a>
+				<div class="text">{{ message.text }}</div>
+				{% if message.replies %}
+				<blockquote>
+				{% for reply in message.replies %}
+				<div class="reply">
+					<strong class="when">{{ reply.when|date:"D, d b Y - H:s" }}</strong><br>
+					{{ reply.text }}
+				</div>
+				{% endfor %}
+				</blockquote>
+				{% endif %}
+			</article>
+			{% endfor %}
+			{% endif %}
+		</section>
+		<hr>
+		<footer>
+			&copy; 2011 - 
+			<a href="mailto:folksilva@gmail.com">Luiz Fernando da Silva</a> e 
+			<a href="mailto:alessandrorgon@gmail.com">Alessandro Rodolpho Gonçalves</a> - 
+			Todos os direitos reservados
+		</footer>
+		<hr>
+		<div class="blank-space"></div>
+	</div>
+	<div class="modal">
+		<div class="reply-form">
+			<form id="reply-message" action="/reply" method="POST" target="ajaxframe">
+				<span id="reply-counter">200</span>
+				ENVIE A SUA RESPOSTA PARA A MENSAGEM:
+				<input type="hidden" name="m" id="m"/>
+				<textarea class="reply-text" id="t" name="t" placeholder="Digite a resposta que deseja enviar"></textarea>
+				<div class="align-to-right">
+					<button class="send-button" type="reset" onclick="undoReply()">CANCELAR</button>
+					<button class="send-button" type="submit">ENVIAR</button>
+				</div> 
+			</form>
+		</div>
+	</div>
+	<iframe id="ajaxframe" class="ajaxframe" name="ajaxframe"></iframe>
+</body>
+</html>
