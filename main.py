@@ -43,7 +43,7 @@ class MainPage(webapp.RequestHandler):
         plate = None
         
         try:
-            plate = self.request.get("p")
+            plate = self.request.get("p").upper()
             key = self.request.get("m")
             flash = self.request.get("f")
             if key:
@@ -72,15 +72,15 @@ class MainPage(webapp.RequestHandler):
     def post(self):
         
         try:
-            plate = self.request.get("plate")
+            plate = self.request.get("plate").upper()
             text = self.request.get("msg")
             msg = Message()
             msg.plate = plate
             msg.text = text
             msg.put()
-            self.redirect("/?p=%s#m%s" % (self.request.get("plate"),msg.key()), False)
+            self.redirect("/?p=%s#m%s" % (plate,msg.key()), False)
         except:
-            self.redirect("/?p=%s&f=Não consegui salvar a sua mensagem. =(" % self.request.get("plate"), False)
+            self.redirect("/?p=%s&f=Não consegui salvar a sua mensagem. =(" % plate, False)
 
 class ReplyMsg(webapp.RequestHandler):
     def post(self):
